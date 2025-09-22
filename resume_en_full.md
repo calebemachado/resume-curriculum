@@ -14,7 +14,7 @@ Senior Software Engineer with ~10 years building reliable, scalable systems for 
 - Time zone: GMT‑3 with overlap to CET/EST/PST
 - English: C1 (Advanced); Portuguese: Native
 - Async/remote: GitHub/GitLab, Jira, Slack, Notion, Confluence
-- Secure home office (≥100 Mbps); experienced with USD/EUR contracting
+- Secure home office (100+ Mbps); experienced with USD/EUR contracting
 - Open to B2B contractor or full‑time remote
 
 ## Skills

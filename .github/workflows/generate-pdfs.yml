@@ -24,7 +24,7 @@ jobs:
     - name: Install Pandoc and LaTeX
       run: |
         sudo apt-get update
-        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex fonts-liberation
         
     - name: Generate PDFs from Markdown files
       run: |
@@ -36,17 +36,43 @@ jobs:
           if [ -f "$md_file" ]; then
             pdf_name="pdfs/${md_file%.md}.pdf"
             echo "Converting $md_file to $pdf_name"
-            pandoc "$md_file" \
+            
+            # Try XeLaTeX first (best Unicode support)
+            if pandoc "$md_file" \
               --from markdown \
               --to pdf \
-              --pdf-engine=pdflatex \
+              --pdf-engine=xelatex \
               --variable geometry:margin=1in \
               --variable fontsize=11pt \
               --variable documentclass=article \
               --variable colorlinks=true \
               --variable linkcolor=blue \
               --variable urlcolor=blue \
-              --output "$pdf_name"
+              --variable mainfont="Liberation Serif" \
+              --variable sansfont="Liberation Sans" \
+              --variable monofont="Liberation Mono" \
+              --output "$pdf_name" 2>/dev/null; then
+              echo "✅ Successfully generated $pdf_name with XeLaTeX"
+            else
+              echo "⚠️  XeLaTeX failed, trying HTML to PDF conversion..."
+              # Fallback: convert to HTML first, then to PDF via wkhtmltopdf
+              html_temp="temp_${md_file%.md}.html"
+              pandoc "$md_file" \
+                --from markdown \
+                --to html5 \
+                --standalone \
+                --metadata title="Resume" \
+                --output "$html_temp"
+              
+              # Install wkhtmltopdf if not available
+              if ! command -v wkhtmltopdf &> /dev/null; then
+                sudo apt-get install -y wkhtmltopdf
+              fi
+              
+              wkhtmltopdf --page-size A4 --margin-top 1in --margin-bottom 1in --margin-left 1in --margin-right 1in "$html_temp" "$pdf_name"
+              rm -f "$html_temp"
+              echo "✅ Successfully generated $pdf_name with HTML->PDF fallback"
+            fi
           fi
         done
         
