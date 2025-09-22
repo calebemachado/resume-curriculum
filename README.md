@@ -7,6 +7,9 @@ My professional résumé/CV in Markdown, version-controlled and ready to export 
 - English
   - Full: [resume_en_full.md](./resume_en_full.md)
   - One‑page: [resume_en_one_page.md](./resume_en_one_page.md)
+  - One‑page (Backend/Platform): [resume_en_one_page_backend.md](./resume_en_one_page_backend.md)
+  - One‑page (Fintech/Payments): [resume_en_one_page_fintech.md](./resume_en_one_page_fintech.md)
+  - One‑page (Cloud/Infra): [resume_en_one_page_cloud.md](./resume_en_one_page_cloud.md)
 
 - Português (Brasil)
   - Completo: [resume_pt-BR_full.md](./resume_pt-BR_full.md)
