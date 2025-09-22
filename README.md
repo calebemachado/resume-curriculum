@@ -26,16 +26,36 @@ The naming scheme is: `resume_<language>_<variant>.md`
 - `<language>`: `en`, `pt-BR`, `es`
 - `<variant>`: `full`, `one_page`
 
-## Export to PDF (optional)
+## PDF Downloads
 
-If you have Pandoc installed you can export any version, e.g.:
+PDFs are automatically generated via GitHub Actions on every commit. Download them from the `pdfs/` directory:
+
+### English
+- [Full Resume (PDF)](./pdfs/resume_en_full.pdf)
+- [One-page Resume (PDF)](./pdfs/resume_en_one_page.pdf)
+- [Backend/Platform (PDF)](./pdfs/resume_en_one_page_backend.pdf)
+- [Fintech/Payments (PDF)](./pdfs/resume_en_one_page_fintech.pdf)
+- [Cloud/Infrastructure (PDF)](./pdfs/resume_en_one_page_cloud.pdf)
+
+### Português (Brasil)
+- [Currículo Completo (PDF)](./pdfs/resume_pt-BR_full.pdf)
+- [Currículo Uma Página (PDF)](./pdfs/resume_pt-BR_one_page.pdf)
+
+### Español
+- [Currículum Completo (PDF)](./pdfs/resume_es_full.pdf)
+- [Currículum Una Página (PDF)](./pdfs/resume_es_one_page.pdf)
+
+## Manual PDF Generation (optional)
+
+If you want to generate PDFs locally, install [Pandoc](https://pandoc.org/installing.html) and run:
 ```bash
-pandoc resume_en_full.md -o resume_en_full.pdf
-pandoc resume_en_one_page.md -o resume_en_one_page.pdf
-pandoc resume_pt-BR_full.md -o resume_pt-BR_full.pdf
-pandoc resume_pt-BR_one_page.md -o resume_pt-BR_one_page.pdf
-pandoc resume_es_full.md -o resume_es_full.pdf
-pandoc resume_es_one_page.md -o resume_es_one_page.pdf
+# Generate all PDFs
+mkdir -p pdfs
+for md in resume_*.md; do pandoc "$md" -o "pdfs/${md%.md}.pdf"; done
+
+# Or individual files
+pandoc resume_en_full.md -o pdfs/resume_en_full.pdf
+pandoc resume_en_one_page_backend.md -o pdfs/resume_en_one_page_backend.pdf
 ```
 
 ## License

@@ -1,0 +1,73 @@
+name: Generate PDFs from Markdown
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: 
+      - '*.md'
+      - '.github/workflows/generate-pdfs.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths: 
+      - '*.md'
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Install Pandoc and LaTeX
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+        
+    - name: Generate PDFs from Markdown files
+      run: |
+        # Create pdfs directory if it doesn't exist
+        mkdir -p pdfs
+        
+        # Generate PDF for each resume markdown file
+        for md_file in resume_*.md; do
+          if [ -f "$md_file" ]; then
+            pdf_name="pdfs/${md_file%.md}.pdf"
+            echo "Converting $md_file to $pdf_name"
+            pandoc "$md_file" \
+              --from markdown \
+              --to pdf \
+              --pdf-engine=pdflatex \
+              --variable geometry:margin=1in \
+              --variable fontsize=11pt \
+              --variable documentclass=article \
+              --variable colorlinks=true \
+              --variable linkcolor=blue \
+              --variable urlcolor=blue \
+              --output "$pdf_name"
+          fi
+        done
+        
+    - name: List generated PDFs
+      run: |
+        echo "Generated PDF files:"
+        ls -la pdfs/ || echo "No PDFs directory found"
+        
+    - name: Configure Git
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+    - name: Commit and push PDFs
+      run: |
+        git add pdfs/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-generate PDFs from markdown files [skip ci]"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
